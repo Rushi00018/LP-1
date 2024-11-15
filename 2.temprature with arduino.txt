@@ -1,0 +1,127 @@
+Step 1: Gather the Components
+Here’s the list of components you will need:
+
+Arduino Board (e.g., Arduino Uno)
+DHT11 Sensor
+LED (for temperature alert)
+10kΩ Resistor (for pull-up configuration with DHT11)
+220Ω Resistor (for LED current limiting)
+Breadboard
+Jumper Wires
+
+Step 2: Wiring the DHT11 Sensor and LED
+Wiring the DHT11 Sensor to Arduino
+The DHT11 sensor has four pins:
+
+VCC (Power pin) - Connects to 5V
+GND (Ground pin) - Connects to GND
+DATA (Data pin) - Connects to Digital Pin 2
+NC (Not Connected) - Not used in this setup
+Wiring Steps:
+
+Connect VCC of the DHT11 to 5V pin on Arduino.
+Connect GND of the DHT11 to GND pin on Arduino.
+Connect DATA of the DHT11 to Digital Pin 2 on Arduino (for reading data).
+Use a 10kΩ pull-up resistor between the DATA pin and VCC pin to stabilize the data signal.
+Wiring the LED to Arduino
+Connect the Anode (long leg) of the LED to Digital Pin 13 on the Arduino.
+Connect the Cathode (short leg) of the LED to GND rail on the breadboard.
+Insert a 220Ω resistor between the Cathode leg of the LED and the GND rail to limit the current.
+Breadboard Layout:
+Place the DHT11 sensor on the breadboard.
+Insert the LED on the breadboard and connect it with the 220Ω resistor to GND.
+Connect all necessary pins using jumper wires to the Arduino.
+
+Step 3: Install the Required Library
+We need the DHT sensor library to interact with the DHT11 sensor.
+
+Open the Arduino IDE.
+Go to Sketch > Include Library > Manage Libraries.
+In the Library Manager, search for DHT sensor library by Adafruit and install it.
+
+Step 4: Write the Arduino Code
+Now that you’ve set up the hardware, let's write the code to read the temperature from the DHT11 sensor and turn the LED on/off based on the threshold temperature.
+
+Open the Arduino IDE.
+Create a new sketch and enter the following code:
+cpp
+Copy code
+#include <DHT.h>  // Include the DHT sensor library
+
+// Define the pin where the DHT11 data pin is connected
+#define DHTPIN 2       // Pin where the DATA pin of DHT11 is connected
+
+// Define the pin for the LED
+#define LEDPIN 13      // Pin where the LED is connected
+
+// Define the DHT11 sensor type
+#define DHTTYPE DHT11  // Use DHT11 sensor (change to DHT22 if needed)
+
+// Create an instance of the DHT class
+DHT dht(DHTPIN, DHTTYPE);
+
+// Set the temperature threshold for triggering the alert
+float thresholdTemp = 30.0;  // Temperature threshold in Celsius
+
+void setup() {
+  // Start serial communication for debugging
+  Serial.begin(9600);
+  
+  // Initialize the DHT11 sensor
+  dht.begin();
+  
+  // Set the LED pin as output
+  pinMode(LEDPIN, OUTPUT);
+}
+
+void loop() {
+  // Read the temperature from the DHT11 sensor
+  float temp = dht.readTemperature();
+  
+  // Check if the reading was successful
+  if (isnan(temp)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;  // If reading failed, exit the loop
+  }
+  
+  // Print the temperature to the Serial Monitor
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.println(" °C");
+  
+  // Check if the temperature exceeds the threshold
+  if (temp > thresholdTemp) {
+    digitalWrite(LEDPIN, HIGH); // Turn on the LED if the temperature exceeds the threshold
+    Serial.println("Alert: Temperature exceeded threshold!");
+  } else {
+    digitalWrite(LEDPIN, LOW);  // Turn off the LED if the temperature is below the threshold
+  }
+  
+  // Wait for 2 seconds before reading again
+  delay(2000);
+}
+Save the code with a suitable name (e.g., TemperatureAlert).
+
+Step 5: Upload the Code to Arduino
+Connect the Arduino board to your computer via USB.
+Select the correct board and port:
+Go to Tools > Board > Arduino Uno (or the board you are using).
+Go to Tools > Port and select the correct port.
+Click the Upload button (the right arrow) to upload the code to the Arduino.
+
+Step 6: Monitor the Output
+Open the Serial Monitor in the Arduino IDE (Tools > Serial Monitor).
+Set the baud rate to 9600 to match the one used in the code.
+You should start seeing the temperature readings in the Serial Monitor.
+If the temperature exceeds the threshold (30°C), the LED on Pin 13 will turn on.
+If the temperature is below the threshold, the LED will turn off.
+
+Step 7: (Optional) Adjust the Threshold Temperature
+If you want to change the threshold temperature, modify the thresholdTemp value in the code. For example, to set the threshold to 25°C:
+
+cpp
+Copy code
+float thresholdTemp = 25.0;  // Set the threshold temperature to 25°C
+
+Conclusion
+You have successfully connected the DHT11 sensor to your Arduino, written the code to read the temperature, and used an LED to indicate when the temperature exceeds a certain threshold.

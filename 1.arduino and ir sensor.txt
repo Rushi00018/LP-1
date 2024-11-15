@@ -1,0 +1,54 @@
+iot 1
+
+component-buzzer,ir sensor,wires, breadboard,arduino
+
+1.Buzzer:
+
+Negative side connected to the negative rail of the breadboard.
+Positive side connected to Arduino Pin 7.
+
+2.IR Sensor:
+
+VCC connected to 5V on the Arduino.
+GND connected to the negative rail on the breadboard.
+OUT connected to Arduino Pin 12.
+
+3.Breadboard Grounding:
+
+Arduino GND connected to the negative rail on the breadboard to ensure a common ground.
+
+
+
+code-
+
+int irSensorPin = 12;  // IR sensor output pin
+int buzzerPin = 7;     // Buzzer pin
+
+void setup() {
+  pinMode(irSensorPin, INPUT);  // IR sensor as input
+  pinMode(buzzerPin, OUTPUT);   // Buzzer as output
+  Serial.begin(9600);           // Start serial communication
+}
+
+void loop() {
+  int sensorValue = digitalRead(irSensorPin);  // Read IR sensor
+
+  if (sensorValue == LOW) {  // Object detected
+    digitalWrite(buzzerPin, HIGH);  // Turn on buzzer
+    Serial.println("Object detected! Buzzer ON");
+  } else {
+    digitalWrite(buzzerPin, LOW);   // Turn off buzzer
+    Serial.println("No object detected. Buzzer OFF");
+  }
+
+  delay(500);  // Small delay to stabilize readings
+}
+
+
+
+
+Testing
+Upload the code to your Arduino.
+When the IR sensor detects an object, the buzzer should turn on.
+If it doesn’t work as expected, double-check the wiring, particularly the grounding on the breadboard.
+This setup should allow the IR sensor to trigger the buzzer correctly. Let me know if you encounter any issues!
